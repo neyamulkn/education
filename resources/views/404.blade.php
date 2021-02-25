@@ -1,18 +1,24 @@
-@extends('layouts.frontend')
-@section('title', '404 page not found')
-@section('css')
-    <link rel="stylesheet" href="{{asset('css/pages/error-pages.css')}}">
-@endsection
+@extends('frontend.layouts.master')
 @section('content')
-   
-    <section id="wrapper" class="error-page">
-        <div class="error-box" style="position: relative !important;">
-            <div class="error-body text-center">
-                <h1>404</h1>
-                <h3 class="text-uppercase">Page Not Found !</h3>
-                <p class="text-muted m-t-30 m-b-30">YOU SEEM TO BE TRYING TO FIND HIS WAY HOME</p>
-                <a href="{{url('/')}}" class="btn btn-info btn-rounded waves-effect waves-light m-b-40">Back to home</a> </div>
-            
-        </div>
-    </section>
+  
+
+	<section class="error-wrap">
+		<div class="container">
+			<div class="row justify-content-center">
+				
+				<div class="col-lg-6 col-md-10">
+					<div class="text-center">
+						
+						<img src="{{ asset('frontend')}}/img/404.png" class="img-fluid" alt="">
+						<p>Sorry Page Not Found !</p>
+						<a class="btn btn-theme" href="{{url('/')}}">Back To Home</a>
+						
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</section>
+
 @endsection
+		

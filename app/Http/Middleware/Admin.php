@@ -16,9 +16,9 @@ class Admin
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::guard('admin')->check()) {
+        if (Auth::guard('admin')->check() && Auth::guard('admin')->user()->role == 'admin') {
             return $next($request);
         }
-        return redirect()->back()->with('unsuccess',"You don't have access to that section");
+        return redirect()->route('404');
     }
 }

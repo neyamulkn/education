@@ -6,6 +6,9 @@ route::group(['middleware' => ['auth', 'admin']], function(){
 
 });
 
+//profile image change for all user
+Route::post('change/profile/image', 'AjaxController@changeProfileImage')->name('changeProfileImage');
+
 //get product subcategory by category ID
 Route::get('get/subcategory/{cat_id}', 'AjaxController@get_subcategory')->name('getSubCategory');
 //get product sub child category by sub category ID

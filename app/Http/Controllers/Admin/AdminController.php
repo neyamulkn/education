@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Admin;
 use App\Http\Controllers\Controller;
 use App\User;
 use Brian2694\Toastr\Facades\Toastr;
@@ -34,29 +33,29 @@ class AdminController extends Controller
 	        'name' => 'required',
 	        'username' => 'required',
 	        'mobile' => 'required',
-	        'email' => ['email','unique:admins,email,'.$admin_id],
+	        'email' => ['email','unique:users,email,'.$admin_id],
         ]);
 
-	    $profile = Admin::find($admin_id);
+	    $profile = User::find($admin_id);
         $profile->name = $request->name;
         $profile->username = $request->username;
         $profile->mobile = $request->mobile;
         $profile->email = $request->email;
 
-        if ($request->hasFile('phato')) {
+        if ($request->hasFile('photo')) {
             //delete image from folder
-            $image_path = public_path('assets/images/users/'. $profile->phato);
-            if(file_exists($image_path) && $profile->phato){
+            $image_path = public_path('assets/images/users/'. $profile->photo);
+            if(file_exists($image_path) && $profile->photo){
                 unlink($image_path);
             }
-            $image = $request->file('phato');
+            $image = $request->file('photo');
             $new_image_name = rand() . '.' . $image->getClientOriginalExtension();
 
             $image_path = public_path('assets/images/users/' . $new_image_name);
             $image_resize = Image::make($image);
             $image_resize->resize(250, 250);
             $image_resize->save($image_path);
-            $profile->phato = $new_image_name;
+            $profile->photo = $new_image_name;
         }
         $profile->save();
 	    Toastr::success('Profile update success');
@@ -71,7 +70,7 @@ class AdminController extends Controller
     //password update
     public function passwordUpdate(Request $request){
         $user_id  = Auth::guard('admin')->id();
-        $check = Admin::find($user_id);
+        $check = User::find($user_id);
         if($check) {
             $this->validate($request, [
                 'old_password' => 'required',
@@ -81,7 +80,7 @@ class AdminController extends Controller
             $old_password = $check->password;
             if (Hash::check($request->old_password, $old_password)) {
                 if (!Hash::check($request->password, $old_password)) {
-                    $user = Admin::find($user_id);
+                    $user = User::find($user_id);
                     $user->password = Hash::make($request->password);
                     $user->save();
                     Toastr::success('Password successfully change.', 'Success');

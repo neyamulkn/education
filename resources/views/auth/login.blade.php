@@ -1,8 +1,6 @@
-
 @extends('frontend.layouts.master')
 @section('title', 'Login | '.Config::get('siteSetting.site_name'))
 @section('css')
-
 <style type="text/css">
    
     .dropdown-toggle::after, .dropup .dropdown-toggle::after {
@@ -16,8 +14,9 @@
       display: none; }
 
     .loginArea{background: #fff; border-radius: 5px;margin:10px 0;padding: 20px;}
+
 </style>
- @endsection
+@endsection
 @section('content')
 <div class="container">
     <div id="pageLoading" style="display: none;"></div>
@@ -25,10 +24,8 @@
         
         <div class="col-md-6 col-xs-12 ">
             <div class="card loginArea">
-
-                <div class="card-body">
-                    <div id="loginform">
-                        <form action="{{route('login')}}" data-parsley-validate method="post">
+                <div id="loginform">
+                        <form  action="{{route('login')}}" data-parsley-validate method="post">
                             @csrf
                             <div class="card-header text-center"><h3>Sign In</h3></div>
 
@@ -51,39 +48,38 @@
                                 @endif
                             </div>
                             <div class="form-group">
-                                <div class="col-md-12">
-                                    <div style=" display: flex!important;" class="d-flex no-block align-items-center">
-                                        <div style="display: inline-flex;" class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="Remember"> 
-                                            <label style="margin: 0 5px;" class="custom-control-label" for="Remember"> Remember me</label>
-                                        </div> 
-                                        <div class="ml-auto" style="margin-left: auto!important;">
-                                            <a href="javascript:void(0)" id="to-recover" class="text-muted"><i class="fa fa-lock"></i> Forgot pwd?</a> 
-                                        </div>
+                               
+                                <div style=" display: flex!important;" class="d-flex no-block align-items-center">
+                                    <div style="display: inline-flex;" class="custom-control custom-checkbox">
+                                        <label style="margin: 0 5px;" class="custom-control-label" for="Remember"> <input type="checkbox" id="Remember"> 
+                                         Remember me</label>
+                                    </div> 
+                                    <div class="ml-auto" style="margin-left: auto!important;">
+                                        <a href="javascript:void(0)" id="to-recover" class="text-muted"><i class="fa fa-lock"></i> Forgot pwd?</a> 
                                     </div>
                                 </div>
+                                
                             </div>
                         
                             <div class="form-group text-center">
                                 <input type="submit" value="Log In" class="btn btn-block btn-lg btn-info btn-rounded">
                             </div> 
                             <div class="form-group m-b-0">
+                                
                                 <div class="col-sm-12 text-center">
                                     Don't have an account? <a href="{{route('register')}}" class="text-info m-l-5"><b>Sign Up</b></a>
                                 </div>
                             </div> 
                         </form>
 
-                         <div id="column-login" style="margin:15px 0" class="col-sm-8 pull-right">
-                                <div class="row">
-                                    <div class="social_login pull-right" id="so_sociallogin">
-                                      <a href="{{route('social.login', 'facebook')}}"class="btn btn-social-icon btn-sm btn-facebook " id="socialloginBtn"><i class="fa fa-facebook fa-fw" aria-hidden="true"></i></a>
-                                     <!--  <a href="#" class="btn btn-social-icon btn-sm btn-twitter"><i class="fa fa-twitter fa-fw" aria-hidden="true"></i></a> -->
-                                      <a href="{{route('social.login', 'google')}}" class="btn btn-social-icon btn-sm btn-google-plus socialloginBtn" id="socialloginBtn"><i class="fa fa-google fa-fw" aria-hidden="true"></i></a>
-                                      <!-- <a href="#" class="btn btn-social-icon btn-sm btn-linkdin"><i class="fa fa-linkedin fa-fw" aria-hidden="true"></i></a> -->
-                                    </div>
-                                </div>
-                            </div> 
+                        <div id="column-login">
+                            <div class="social_login pull-right" id="so_sociallogin">
+                              <a href="{{route('social.login', 'facebook')}}" class="btn btn-social-icon btn-sm btn-facebook"><i class="ti-facebook" aria-hidden="true"></i></a>
+                             <!--  <a href="#" class="btn btn-social-icon btn-sm btn-twitter"><i class="fa fa-twitter fa-fw" aria-hidden="true"></i></a> -->
+                              <a href="{{route('social.login', 'google')}}" class="btn btn-social-icon btn-sm btn-google-plus"><i class="ti-google" aria-hidden="true"></i></a>
+                              <!-- <a href="#" class="btn btn-social-icon btn-sm btn-linkdin"><i class="fa fa-linkedin fa-fw" aria-hidden="true"></i></a> -->
+                            </div>
+                        </div>
                         </div>  
                         <form class="form-horizontal" method="post" id="recoverform" action="{{ route('password.recover') }}">
                             @csrf
@@ -109,7 +105,7 @@
                                 </div>
                             </div>
                         </form>
-                    </div>
+                   
             </div>
                  
         </div>

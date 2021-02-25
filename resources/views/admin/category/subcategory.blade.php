@@ -66,6 +66,7 @@
                                             <tr>
                                                 <th>Subcategory Name</th>
                                                 <th>Feature Image</th>
+                                                <th>Category</th>
                                                 <th>Notes</th>
                                                 <th>Status</th>
                                                 <th>Action</th>
@@ -76,16 +77,18 @@
                                             <tr id="item{{$data->id}}">
                                                 <td>{{$data->name}}</td>
                                                 <td><img src="{{asset('upload/images/category/'. $data->image)}}" width="50"></td>
+                                                <td>@if($data->get_category) {{$data->get_category->name}} @else Category not found @endif
+                                                </td>
                                                 <td>{{$data->notes}}</td>
-                                                <td> <div class="custom-control custom-switch">
-                                                      <input  name="status" onclick="satusActiveDeactive('categories', {{$data->id}})"  type="checkbox" {{($data->status == 1) ? 'checked' : ''}}  type="checkbox" class="custom-control-input" id="status{{$data->id}}">
-                                                      <label style="padding: 5px 12px" class="custom-control-label" for="status{{$data->id}}"></label>
+                                                <td><div class="custom-control custom-switch">
+                                                    <input  name="status" onclick="satusActiveDeactive('categories', {{$data->id}})"  type="checkbox" {{($data->status == 1) ? 'checked' : ''}}  type="checkbox" class="custom-control-input" id="status{{$data->id}}">
+                                                    <label style="padding: 5px 12px" class="custom-control-label" for="status{{$data->id}}"></label>
                                                     </div>
                                                 </td>
                                                 <td>
                                                     
                                                     <button type="button" onclick="edit('{{$data->id}}')"  data-toggle="modal" data-target="#edit" class="btn btn-info btn-sm"><i class="ti-pencil" aria-hidden="true"></i> Edit</button>
-                                                    <button data-target="#delete" onclick="confirmPopup('{{ $data->id }}')" class="btn btn-danger btn-sm" data-toggle="modal"><i class="ti-trash" aria-hidden="true"></i> Delete</button>
+                                                    <button data-target="#delete" onclick="deleteConfirmPopup('{{ route('subcategory.delete', $data->id) }}')" class="btn btn-danger btn-sm" data-toggle="modal"><i class="ti-trash" aria-hidden="true"></i> Delete</button>
                                                 </td>
                                             </tr>
                                             @endforeach
@@ -215,30 +218,8 @@
             </div>
         </div>
 
-        <!-- delete Modal -->
-        <div id="delete" class="modal fade">
-            <div class="modal-dialog modal-confirm">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <div class="icon-box">
-                            <i class="fa fa-times" aria-hidden="true"></i>
-                        </div>
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    </div>
-                    <div class="modal-body">
-                        <h4 class="modal-title">Are you sure?</h4>
-                        <p>Do you really want to delete these records? This process cannot be undone.</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
-                        <button type="button" value="" id="itemID" onclick="deleteItem(this.value)" data-dismiss="modal" class="btn btn-danger">Delete</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-         <!-- banner modal -->
-        @include('admin.category.category-banner-modal');
+       <!-- delete Modal -->
+        @include('admin.modal.delete-modal')
 
 
 @endsection
@@ -291,33 +272,6 @@
 
      }
 
-
-     function confirmPopup(id) {
-
-        document.getElementById('itemID').value = id;
-     }
-        function deleteItem(id) {
-
-            var link = '{{route("subcategory.delete", ":id")}}';
-            var link = link.replace(':id', id);
-
-                $.ajax({
-                url:link,
-                method:"get",
-                success:function(data){
-                    if(data.status){
-                        $("#item"+id).hide();
-                        toastr.success(data.msg);
-                    }else{
-                        toastr.error(data.msg);
-                    }
-                }
-            });
-        }
-        // if occur error open model
-        @if($errors->any())
-            $("#{{Session::get('submitType')}}").modal('show');
-        @endif
     </script>
   
      

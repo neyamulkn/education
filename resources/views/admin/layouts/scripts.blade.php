@@ -24,21 +24,23 @@
 
     <script type="text/javascript">
       
-        function deleteConfirmPopup(route) {
+        function deleteConfirmPopup(route, item='') {
             $('#deleteModal').modal('show');
             document.getElementById('deleteItemRoute').value = route;
+            //hide delete item
+            document.getElementById('item').value = item;
         }
 
         function deleteItem(route) {
             //separate id from route
             var id = route.split("/").pop();
-           
+            var item = $('#item').val();
             $.ajax({
                 url:route,
                 method:"get",
                 success:function(data){
                     if(data.status){
-                        $("#item"+id).hide();
+                        $("#item"+item+id).hide();
                         toastr.success(data.msg);
                     }else{
                         toastr.error(data.msg);

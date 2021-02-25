@@ -16,28 +16,29 @@
         border-bottom: 1px solid #ececec;
     }
     .error{color:red;}
+    
 </style>
- @endsection
+@endsection
 @section('content')
 <section>
     <div class="container">
         
         <div class="row justify-content-center" style="padding-top: 20px; ">
-            <div class="col-md-6 col-12 hidden-xs hidden-sm" >
-                <img src="{{asset('upload/users/register-bg.png')}}">
+            <div class="col-md-6 col-12 hidden-xs-down" >
+                <img width="100%" src="https://image.freepik.com/free-vector/self-management-concept-vector-illustration_107173-16709.jpg">
             </div>
             <div class="col-md-6 col-12" style="background: rgb(239 239 239);padding: 5px 10px; padding: 5px 10px;">
                 <div class="card">
 
                        <div class="card-body">
 
-                            <form id="loginform" data-parsley-validate action="{{route('userRegister')}}" method="post" >
+                            <form id="loginform" data-parsley-validate action="{{route('register')}}" method="post" >
                                 @csrf
                                 <div class="card-header text-center"><h3>Sign Up</h3></div>
                                 <div class="form-group">
                                   <label class="control-label required" for="name">Full Name</label>
                                   <input type="text" required name="name" value="{{old('name')}}" placeholder="Enter Name" data-parsley-required-message = "Name is required" id="input-email" class="form-control">
-                                  @if ($errors->has('name'))
+                                    @if ($errors->has('name'))
                                         <span class="error" role="alert">
                                             {{ $errors->first('name') }}
                                         </span>
@@ -87,17 +88,14 @@
                                 <div class="form-group text-center">
                                     <button class="btn btn-block btn-lg btn-info btn-rounded" type="submit">Sign Up</button>
                                 </div> 
-                                <div id="column-login" style="margin:15px 0" class="col-sm-8 pull-right">
-                                    <div class="row">
-                                        <div class="social_login pull-right" id="so_sociallogin">
-                                          <a href="{{route('social.login', 'facebook')}}" class="btn btn-social-icon btn-sm btn-facebook"><i class="fa fa-facebook fa-fw" aria-hidden="true"></i></a>
-                                         <!--  <a href="#" class="btn btn-social-icon btn-sm btn-twitter"><i class="fa fa-twitter fa-fw" aria-hidden="true"></i></a> -->
-                                          <a href="{{route('social.login', 'google')}}" class="btn btn-social-icon btn-sm btn-google-plus"><i class="fa fa-google fa-fw" aria-hidden="true"></i></a>
-                                          <!-- <a href="#" class="btn btn-social-icon btn-sm btn-linkdin"><i class="fa fa-linkedin fa-fw" aria-hidden="true"></i></a> -->
-                                        </div>
+                                <div id="column-login">
+                                    <div class="social_login pull-right" id="so_sociallogin">
+                                      <a href="{{route('social.login', 'facebook')}}" class="btn btn-social-icon btn-sm btn-facebook"><i class="ti-facebook" aria-hidden="true"></i></a>
+                                     <!--  <a href="#" class="btn btn-social-icon btn-sm btn-twitter"><i class="fa fa-twitter fa-fw" aria-hidden="true"></i></a> -->
+                                      <a href="{{route('social.login', 'google')}}" class="btn btn-social-icon btn-sm btn-google-plus"><i class="ti-google" aria-hidden="true"></i></a>
+                                      <!-- <a href="#" class="btn btn-social-icon btn-sm btn-linkdin"><i class="fa fa-linkedin fa-fw" aria-hidden="true"></i></a> -->
                                     </div>
-                                </div>                            
-               
+                                </div>
                             </form>
                         </div>
                 </div>

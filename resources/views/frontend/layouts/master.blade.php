@@ -6,7 +6,8 @@
 	<meta name="author" content="#" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	
-    <title>Online Course & Education</title>
+    <title>@yield('title')</title>
+    @yield('metatag')
     <!-- Schema.org for Google -->
     <meta itemprop="name" content="Online Course & Education. Education is the key to unlocking potential for a better future.">
     <meta itemprop="description" content="Our free online education courses will give you the means to inspire the next generation. Education is the key to unlocking potential for a better future.">
@@ -17,7 +18,9 @@
 	<link href="{{ asset('frontend')}}/css/colors.css" rel="stylesheet">
 	<!-- Custom CSS -->
 	<link href="{{ asset('frontend')}}/css/custom.css" rel="stylesheet">
+	<link href="{{ asset('frontend')}}/css/toastr.css" rel="stylesheet">
 	@yield('css')
+	@yield('extra_css')
 </head>
 	
 <body class="red-skin">
@@ -45,16 +48,16 @@
 					<div class="modal-body">
 						<h4 class="modal-header-title">Log In</h4>
 						<div class="login-form">
-							<form>
-							
+							<form action="{{route('login')}}" data-parsley-validate method="post">
+								@csrf
 								<div class="form-group">
 									<label>User Name</label>
-									<input type="text" class="form-control" placeholder="Username">
+									<input type="text" type="text" name="emailOrMobile" value="@if(Cookie::has('emailOrMobile')){{Cookie::get('emailOrMobile')}}@else{{old('emailOrMobile')}}@endif" placeholder="Enter Email or Mobile Number " id="input-email" required="" data-parsley-required-message = "Email or Mobile number is required" class="form-control">
 								</div>
 								
 								<div class="form-group">
 									<label>Password</label>
-									<input type="password" class="form-control" placeholder="*******">
+									<input type="password" class="form-control" value="@if(Cookie::has('password')){{Cookie::get('password')}}@else{{old('password')}}@endif" required="" name="password" value="" placeholder="Password" id="input-password" data-parsley-required-message = "Password is required">
 								</div>
 								
 								<div class="form-group">
@@ -75,8 +78,16 @@
 						</div>
 						
 						<div class="text-center">
-							<p class="mt-2">Haven't Any Account? <a href="register.html" class="link">Click here</a></p>
+							<p class="mt-2">Haven't Any Account? <a data-dismiss="modal" data-toggle="modal" data-target="#signup" href="#" class="link">Click here</a></p>
 						</div>
+						<div id="column-login">
+                            <div class="social_login pull-right" id="so_sociallogin">
+                              <a href="{{route('social.login', 'facebook')}}" class="btn btn-social-icon btn-sm btn-facebook"><i class="ti-facebook" aria-hidden="true"></i></a>
+                             <!--  <a href="#" class="btn btn-social-icon btn-sm btn-twitter"><i class="fa fa-twitter fa-fw" aria-hidden="true"></i></a> -->
+                              <a href="{{route('social.login', 'google')}}" class="btn btn-social-icon btn-sm btn-google-plus"><i class="ti-google" aria-hidden="true"></i></a>
+                              <!-- <a href="#" class="btn btn-social-icon btn-sm btn-linkdin"><i class="fa fa-linkedin fa-fw" aria-hidden="true"></i></a> -->
+                            </div>
+                        </div>
 					</div>
 				</div>
 			</div>
@@ -91,22 +102,45 @@
 					<div class="modal-body">
 						<h4 class="modal-header-title">Sign Up</h4>
 						<div class="login-form">
-							<form>
-							
+							<form data-parsley-validate action="{{route('register')}}" method="post">
+								@csrf
 								<div class="form-group">
-									<input type="text" class="form-control" placeholder="Full Name">
+									<label class="control-label required" for="mobile">Name</label>
+									<input type="text" required name="name" value="{{old('name')}}" placeholder="Enter Name" data-parsley-required-message = "Name is required" id="input-email" class="form-control">
+                                    @if ($errors->has('name'))
+                                        <span class="error" role="alert">
+                                            {{ $errors->first('name') }}
+                                        </span>
+                                    @endif
 								</div>
 								
 								<div class="form-group">
-									<input type="email" class="form-control" placeholder="Email">
+									<label class="control-label required" for="mobile">Mobile Number</label>
+									<input type="text" required name="mobile" value="{{old('mobile')}}" pattern="/(01)\d{9}/" minlength="11" placeholder="Enter Mobile Number" id="mobile" data-parsley-required-message = "Mobile number is required" class="form-control">
+                                  @if ($errors->has('mobile'))
+                                        <span class="error" role="alert">
+                                            {{ $errors->first('mobile') }}
+                                        </span>
+                                    @endif
+								</div>
+								<div class="form-group">
+									 <label class="control-label" for="email">Email Address (optional)</label>
+									 <input type="email" pattern="[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-zA-Z]{2,4}"  name="email" value="{{old('email')}}" placeholder="Enter Email Address" id="email" class="form-control">
+                                  @if ($errors->has('email'))
+                                        <span class="error" role="alert">
+                                            {{ $errors->first('email') }}
+                                        </span>
+                                    @endif
 								</div>
 								
 								<div class="form-group">
-									<input type="text" class="form-control" placeholder="Username">
-								</div>
-								
-								<div class="form-group">
-									<input type="password" class="form-control" placeholder="*******">
+									<label class="control-label required" for="password">Password</label>
+									<input type="password" name="password" placeholder="Password" required id="password" data-parsley-required-message = "Password is required" minlength="6" class="form-control">
+                                    @if ($errors->has('password'))
+                                        <span class="error" role="alert">
+                                           {{ $errors->first('password') }}
+                                        </span>
+                                    @endif
 								</div>
 
 								
@@ -117,8 +151,16 @@
 							</form>
 						</div>
 						<div class="text-center">
-							<p class="mt-3"><i class="ti-user mr-1"></i>Already Have An Account? <a href="#" class="link">Go For LogIn</a></p>
+							<p class="mt-3"><i class="ti-user mr-1"></i>Already Have An Account? <a href="#" data-toggle="modal" data-target="#login" data-dismiss="modal" class="link">Go For LogIn</a></p>
 						</div>
+						<div id="column-login">
+                            <div class="social_login pull-right" id="so_sociallogin">
+                              <a href="{{route('social.login', 'facebook')}}" class="btn btn-social-icon btn-sm btn-facebook"><i class="ti-facebook" aria-hidden="true"></i></a>
+                             <!--  <a href="#" class="btn btn-social-icon btn-sm btn-twitter"><i class="fa fa-twitter fa-fw" aria-hidden="true"></i></a> -->
+                              <a href="{{route('social.login', 'google')}}" class="btn btn-social-icon btn-sm btn-google-plus"><i class="ti-google" aria-hidden="true"></i></a>
+                              <!-- <a href="#" class="btn btn-social-icon btn-sm btn-linkdin"><i class="fa fa-linkedin fa-fw" aria-hidden="true"></i></a> -->
+                            </div>
+                        </div>
 					</div>
 				</div>
 			</div>
@@ -142,6 +184,8 @@
 	<script src="{{ asset('frontend') }}/js/jquery.counterup.min.js"></script>
 	<script src="{{ asset('frontend') }}/js/counterup.min.js"></script>
 	<script src="{{ asset('frontend') }}/js/custom.js"></script>
+	<script src="{{ asset('frontend') }}/js/parsley.min.js"></script>
+	<script src="{{ asset('frontend') }}/js/toastr.js"></script>
 	<!-- ============================================================== -->
 	<!-- This page plugins -->
 	<!-- ============================================================== -->
@@ -164,6 +208,17 @@
 	</script>
 
 	@yield('js')
+	@yield('extra_js')
+
+
+	{!! Toastr::message() !!}
+	<script>
+	    @if($errors->any())
+	    @foreach($errors->all() as $error)
+	    toastr.error("{{ $error }}");
+	    @endforeach
+	    @endif
+	</script>
 
 	</body>
 </html>

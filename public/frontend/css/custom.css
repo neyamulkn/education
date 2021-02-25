@@ -1,0 +1,15 @@
+#column-login{float: right;}
+#so_sociallogin .btn-facebook {
+    color: #fff;
+    background-color: #3b5998;
+    border-color: rgba(0,0,0,0.2);
+}
+#so_sociallogin .btn-google-plus {
+    color: #fff;
+    background-color: #dd4b39;
+    border-color: rgba(0,0,0,0.2);
+}
+
+.parsley-length,.parsley-pattern, .error, .invalid-feedback{color: #c90909;
+    font-size: 12px;}
+.parsley-required,.parsley-equalto,.parsley-type,.parsley-minlength{color: red;}

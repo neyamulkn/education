@@ -30,12 +30,14 @@ trait CreateSlug {
 
     public function uniqueOrderId($table, $field, $order_id)
     {
-
         $check_path = DB::table($table)->select($field)->where($field, 'like', $order_id.'%')->get();
         if (count($check_path)>0){
             //find slug until find not used.
             for ($i = 1; $i <= count($check_path); $i++) {
-                $new_order_id = 'WO' . $user_id . strtoupper(substr(str_shuffle("0123456789"), -$numberLen));
+                $user_id = (Auth::check() ? Auth::id() : rand(000, 999));
+                $numberLen = strlen($user_id);
+                $numberLen = 9 - $numberLen;
+                $new_order_id = 'S' . $user_id . strtoupper(substr(str_shuffle("0123456789"), -$numberLen));
                 if (!$check_path->contains($field, $new_order_id)) {
                     return $new_order_id;
                 }

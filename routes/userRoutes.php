@@ -6,12 +6,8 @@ Route::get('user/login', 'User\UserLoginController@LoginForm')->name('LoginForm'
 Route::post('user/login', 'User\UserLoginController@login')->name('userLogin');
 Route::get('user/register', 'User\UserRegController@RegisterForm')->name('userRegisterForm');
 Route::post('user/register', 'User\UserRegController@register')->name('userRegister');
-Route::get('user/logout', 'User\UserLoginController@logout')->name('userLogout');
+Route::get('user/logout', 'Auth\LoginController@logout')->name('userLogout');
 
-Route::get('checkout/get/city/{state_id?}', 'User\CheckoutController@get_city')->name('checkout.get_city');
-Route::post('user/shipping/register', 'User\CheckoutController@ShippingRegister')->name('shippingRegister');
-// get shipping address by shipping id
-Route::get('get/shipping/address/{shipping_id}', 'User\CheckoutController@getShippingAddress')->name('getShippingAddress');
 
 Route::get('addto/compare/{product_id}', 'User\CompareController@addToCompare')->name('addToCompare');
 Route::get('compare/product', 'User\CompareController@compare')->name('productCompare');
@@ -30,18 +26,24 @@ route::group(['middleware' => ['auth']], function(){
 	Route::post('product/review/insert', 'ReviewController@reviewInsert')->name('review.insert');
 
 	
-	route::group(['namespace' => 'User'], function(){
+	route::group(['prefix' => 'user'], function(){
 		//user account
-		Route::get('dashboard', 'UserController@dashboard')->name('user.dashboard');
-		Route::get('user/profile', 'UserController@myAccount')->name('user.myAccount');
-		Route::post('user/profile/update', 'UserController@profileUpdate')->name('user.profileUpdate');
-		Route::post('user/address/update', 'UserController@addressUpdate')->name('user.addressUpdate');
-		Route::get('user/change-password', 'UserController@changePasswordForm')->name('user.change-password');
-		Route::post('user/change-password', 'UserController@changePassword')->name('user.change-password');
+		Route::get('dashboard', 'StudentController@dashboard')->name('user.dashboard');
+		Route::get('profile', 'StudentController@userProfile')->name('user.profile');
+		Route::post('profile/update', 'StudentController@profileUpdate')->name('user.profileUpdate');
+		Route::post('address/update', 'StudentController@addressUpdate')->name('user.addressUpdate');
+		Route::get('change-password', 'StudentController@changePasswordForm')->name('user.change-password');
+		Route::post('change-password', 'StudentController@changePassword')->name('user.change-password');
 
 		Route::get('addto/wishlist', 'WishlistController@store')->name('wishlist.add');
 		Route::get('wishlist', 'WishlistController@index')->name('wishlists');
 		Route::get('wishlist/remove/{id}', 'WishlistController@remove')->name('wishlist.remove');
+
+		
+		Route::get('course/enrolled/{slug}', 'CourseEnrolledController@courseEnrolled')->name('courseEnrolled');
+		Route::get('course/purchase/payment/{enrolled_id}', 'PaymentController@coursePurchase')->name('coursePurchase');
+		Route::post('course/purchase/payment/{enrolled_id}', 'PaymentController@coursePayment')->name('coursePayment');
+
 		
 		//checkout routes
 		Route::get('checkout/shipping/review', 'CheckoutController@shippingReview')->name('shippingReview');

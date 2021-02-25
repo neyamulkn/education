@@ -13,7 +13,7 @@
                 <p>Do you really want to delete these records? This process cannot be undone.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+                <button type="button" value="" id="item" class="btn btn-info" data-dismiss="modal">Cancel</button>
                 <button type="button" value="" id="deleteItemRoute" onclick="deleteItem(this.value)" data-dismiss="modal" class="btn btn-danger">Delete</button>
             </div>
         </div>

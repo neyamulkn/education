@@ -5,12 +5,9 @@ namespace App;
 use App\Models\Area;
 use App\Models\City;
 use App\Models\Country;
-use App\Models\Customers;
 use App\Models\Order;
-use App\Models\Package;
 use App\Models\ShippingAddress;
 use App\Models\State;
-use App\Models\Zone;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -50,10 +47,6 @@ class User extends Authenticatable
         return Cache::has('UserOnline-'.$this->id);
     }
 
-    public function get_shipping_address(){
-        return $this->hasMany(ShippingAddress::class);
-    }
-
     public function get_country(){
         return $this->hasOne(Country::class, 'id','country');
     }
@@ -67,9 +60,8 @@ class User extends Authenticatable
     public function get_area(){
         return $this->hasOne(Area::class, 'id','area');
     }
-    public function orders(){
-        return $this->hasMany(Order::class);
+    public function get_orders(){
+        return $this->hasMany(Order::class)->where('payment_status', '!=', 'pending');
     }
-
 
 }

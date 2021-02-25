@@ -1,7 +1,7 @@
 <div class="dashboard-navbar">
 	
 	<div class="d-user-avater">
-		<img src="assets/img/user-3.jpg" class="img-fluid avater" alt="">
+		<img src="{{ asset('frontend') }}/img/user-3.jpg" class="img-fluid avater" alt="">
 		<h4>Neyamul kobir</h4>
 		<span>Dhaka, Bangladesh</span>
 	</div>

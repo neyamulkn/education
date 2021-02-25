@@ -3,21 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Area;
-use App\Models\Brand;
 use App\Models\Cart;
 use App\Models\Category;
 use App\Models\City;
+use App\Models\Course;
 use App\Models\Order;
 use App\Models\Page;
-use App\Models\PredefinedFeature;
-use App\Models\Product;
 use App\Models\ProductAttribute;
-use App\Models\ProductFeature;
-use App\Models\ProductFeatureDetail;
 use App\Models\ProductVariation;
 use App\Models\ProductVariationDetails;
 use App\Models\State;
+use App\Traits\CreateSlug;
+use App\User;
 use App\Vendor;
+use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
@@ -26,14 +25,38 @@ use Illuminate\Support\Facades\Session;
 
 class AjaxController extends Controller
 {
+    use CreateSlug;
+    public function changeProfileImage(Request $request){
+        $this->validate($request, [
+            'profileImage' => 'required|image|mimes:jpeg,png,jpg,gif'
+        ]);
+        $user = User::find(Auth::id());
+        //profile image
+        if ($request->hasFile('profileImage')) {
+            //delete image from folder
+            $getimage_path = public_path('upload/images/users/'. $user->photo);
+            if(file_exists($getimage_path) && $user->photo){
+                unlink($getimage_path);
+            }
+            $image = $request->file('profileImage');
+            $new_image_name = $this->uniqueImagePath('users', 'photo', $image->getClientOriginalName());
+            $image->move(public_path('upload/images/users'), $new_image_name);
+            $user->photo = $new_image_name;
+            $user->save();
+            Toastr::success('Your profile image update success.');
+            return back();
+        }
+        Toastr::error('Please select any image');
+        return back();
+    }
     //get sub category by category
     public function get_subcategory($cat_id){
-    	$subcategories = Category::with('productsBySubcategory')->where('parent_id', $cat_id)->get();
+    	$subcategories = Category::where('parent_id', $cat_id)->get();
         $output = '';
         if(count($subcategories)>0){
             $output .= '<option value="">Select Subcategory</option>';
             foreach($subcategories as $subcategory){
-                $output .='<option '. (Session::get("subcategory_id") == $subcategory->id ? "selected" : "" ).' value="'.$subcategory->id.'">'.$subcategory->name.' ('.count($subcategory->productsBySubcategory).')</option>';
+                $output .='<option '. (Session::get("subcategory_id") == $subcategory->id ? "selected" : "" ).' value="'.$subcategory->id.'">'.$subcategory->name.'</option>';
             }
         }
         echo $output;
@@ -41,7 +64,7 @@ class AjaxController extends Controller
 
     // get childcategory by category
     public function get_subchild_category($subcat_id){
-    	$subchildcategories = Category::with('productsByChildCategory')->where('subcategory_id', $subcat_id)->get();
+    	$subchildcategories = Category::where('subcategory_id', $subcat_id)->get();
         $output = '';
         if(count($subchildcategories)>0){
             $output .= '<option value="">Select child category</option>';
@@ -72,7 +95,6 @@ class AjaxController extends Controller
     	if(count($attributes)>0){
     		$output = view('admin.product.attributedynamic-fields')->with(compact('attributes'));
     	}
-
     	echo $output;
     }
 
@@ -83,7 +105,7 @@ class AjaxController extends Controller
         if(count($states)>0){
             $output .= '<option value="">Select state</option>';
             foreach($states as $state){
-                $output .='<option '. (Session::get('state') == $state->id ? "selected" : "" ).' value="'.$state->id.'">'.$state->name.'</option>';
+                $output .='<option value="'.$state->id.'">'.$state->name.'</option>';
             }
         }
         echo $output;
@@ -96,10 +118,10 @@ class AjaxController extends Controller
         if(count($cities)>0){
             $output .= '<option value="">Select city</option>';
             foreach($cities as $city){
-                $output .='<option '. (Session::get('city') == $city->id ? "selected" : "" ).' value="'.$city->id.'">'.$city->name.'</option>';
+                $output .='<option value="'.$city->id.'">'.$city->name.'</option>';
             }
         }
-        echo $output;
+        return $output;
     }
 
     // get area by city
@@ -109,7 +131,7 @@ class AjaxController extends Controller
         if(count($areas)>0){
             $output .= '<option value="">Select area</option>';
             foreach($areas as $area){
-                $output .='<option '. (Session::get('area') == $area->id ? "selected" : "" ).' value="'.$area->id.'">'.$area->name.'</option>';
+                $output .='<option value="'.$area->id.'">'.$area->name.'</option>';
             }
         }
         echo $output;
@@ -141,44 +163,6 @@ class AjaxController extends Controller
 
         return response()->json($output);
 
-    }
-
-
-    public function getFeature($category_id){
-        $getFeature = PredefinedFeature::where('category_id', $category_id)->get();
-
-        $output = '';
-        if(count($getFeature)>0){
-            $output = '<div class="row">';
-            foreach ($getFeature as $feature) {
-                $output .=  '<div style="margin-bottom:10px;" class="col-4 col-sm-2 '.($feature->is_required == null ?: "required").' text-right col-form-label">'.$feature->name.'
-                <input type="hidden" value="'.$feature->name.'" class="form-control"  name="features['.$feature->id.']"></div>
-                <div class="col-8 col-sm-4">
-                    <input type="text" '.($feature->is_required == null ?: "required").' name="featureValue['.$feature->id.']" class="form-control"  placeholder="Input value here">
-                </div>';
-            }
-            $output .= '</div>';
-        }
-        echo $output;
-    }
-
-    // delete Variation
-    public function deleteVariation($id)
-    {
-        $delete = ProductVariation::where('id', $id)->delete();
-        if($delete){
-            ProductVariationDetails::where('variation_id', $id)->delete();
-            $output = [
-                'status' => true,
-                'msg' => 'Variation deleted successfully.'
-            ];
-        }else{
-            $output = [
-                'status' => false,
-                'msg' => 'Variation cannot deleted.'
-            ];
-        }
-        return response()->json($output);
     }
 
     // delete Data Common
@@ -252,7 +236,7 @@ class AjaxController extends Controller
     //suggest search keywords
     public function search_keyword(Request $request){
 
-        $product = Product::selectRaw('title as product,slug,feature_image as image');
+        $product = Course::selectRaw('title as product,slug,feature_image as image');
         $keyword = request('q');
         $product->where(function ($query) use ($keyword) {
             $query->orWhere('title', 'like', '%' . $keyword . '%');
@@ -276,7 +260,7 @@ class AjaxController extends Controller
         if(is_numeric($status->$field)){
             $value =  ($status->$field == 1)  ? 0 : 1;
         }else{
-            $value =  ($status->$field == 'active')  ? 'pending' : 'active';
+            $value =  ($status->$field == 'active')  ? 'deactive' : 'active';
         }
         if($status){
             if($status->$field == $value_type){
@@ -347,18 +331,6 @@ class AjaxController extends Controller
         echo 'Position sorting has been updated';
     }
 
-    //get products by anyone field
-    public function getProductsByField (Request $request, $field){
-        $output = '';
-        $products = Product::where($field, $request->id)->where('status', 'active')->get();
-        if(count($products)>0){
-            $output .= ' <option value="">Select Product</option>';
-            foreach ($products as $source) {
-                $output .= ' <option value="'.$source->id.'">'.$source->title.'</option>';
-            }
-        }
-        echo $output;
-    }
 
 
 

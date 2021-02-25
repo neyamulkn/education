@@ -43,7 +43,7 @@ table .custom-switch label {
     display: inline-block;
     margin: 0;}
 .note-toolbar{z-index: inherit !important;}
-
+textarea{resize:vertical;}
 .ajaxError{font-size: 14px; color: red;}
 table .dropdown-item {padding: .3rem .7rem !important}
 .custom-control.custom-switch{margin: 0 -10px 0px 15px;}
@@ -56,7 +56,7 @@ table .dropdown-item {padding: .3rem .7rem !important}
 }
 .status-btn .custom-control-label{padding: 0px 15px !important;}
 dd, h1, h2, h3, h4, h5, h6, label{margin-bottom: 0;}
-.head-label{margin: 7px 30px 25px !important}
+.head-label{margin: 7px 10px 25px !important}
 
 .custom-switch .custom-control-input:checked~.custom-control-label::after {
     background-color: #fff;

@@ -19,14 +19,19 @@ Route::get('password/recover/verify', 'Auth\ForgotPasswordController@passwordRec
 //passord update
 Route::post('password/recover/update', 'Auth\ForgotPasswordController@passwordRecoverUpdate')->name('password.recoverUpdate');
 
-//backend common routes
+
 
 Route::get('/', 'HomeController@index')->name('home');
+Route::get('404', 'HomeController@page404')->name('404');
 Route::get('about-us', 'HomeController@aboutUs')->name('aboutUs');
 Route::get('coureses', 'HomeController@coureses')->name('coureses');
 Route::get('blog', 'HomeController@blog')->name('blog');
 Route::get('pricing', 'HomeController@pricing')->name('pricing');
 Route::get('contact-us', 'HomeController@pricing')->name('contact-us');
+
+
+Route::get('course/{slug?}', 'HomeController@course_details')->name('course_details');
+
 
 Route::get('social-login/redirect/{provider}', 'SocialLoginController@redirectToProvider')->name('social.login');
 Route::get('social-login/{provider}/callback', 'SocialLoginController@handleProviderCallback')->name('social.callback');

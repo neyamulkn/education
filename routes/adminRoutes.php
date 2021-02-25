@@ -25,6 +25,19 @@ Route::group(['middleware' => ['auth:admin', 'admin']], function(){
 	
 	Route::get('footer/setting', 'GeneralSettingController@footerSetting')->name('footerSetting');
 	Route::post('footer/setting/update/{id}', 'GeneralSettingController@footerSettingUpdate')->name('footerSettingUpdate');
+
+
+	//course review
+	route::get('course/review', 'ReviewController@reviewList')->name('adminReviewList');
+	route::post('course/review/insert', 'ReviewController@reviewInsert')->name('courseReviewInsert');
+	
+	route::get('course/review/edit/{id}', 'ReviewController@reviewEdit')->name('adminReviewEdit');
+	route::post('course/review/update', 'ReviewController@reviewUpdate')->name('adminReviewUpdate');
+	route::get('course/review/delete/{id}', 'ReviewController@reviewDelete')->name('adminReviewDelete');
+
+	route::get('course/review/reply/{id}', 'ReviewController@reviewReplyList')->name('reviewReplyList');
+	route::post('course/review/reply/{id}', 'ReviewController@reviewReply')->name('reviewReply');
+
 	
 });
 
@@ -61,7 +74,7 @@ Route::group(['middleware' => ['auth:admin', 'admin'], 'namespace' => 'Admin'], 
 	Route::get('get/category/banner/{slug}', 'CategoryController@getCategoryBanner')->name('getCategoryBanner');
 
 	// subject routes
-	Route::get('class/list', 'AllClassController@index')->name('class');
+	Route::get('class/list/{status?}', 'AllClassController@index')->name('class');
 	Route::post('class/store', 'AllClassController@store')->name('class.store');
 	Route::get('class/{id}/edit', 'AllClassController@edit')->name('class.edit');
 	Route::post('class/update', 'AllClassController@update')->name('class.update');
@@ -73,7 +86,6 @@ Route::group(['middleware' => ['auth:admin', 'admin'], 'namespace' => 'Admin'], 
 	Route::get('subject/{id}/edit', 'SubjectController@edit')->name('subject.edit');
 	Route::post('subject/update', 'SubjectController@update')->name('subject.update');
 	Route::get('subject/delete/{id}', 'SubjectController@delete')->name('subject.delete');
-
 
 	// attribute routes
 	Route::get('attribute', 'AttributeController@attribute_create')->name('attribute');
@@ -91,8 +103,48 @@ Route::group(['middleware' => ['auth:admin', 'admin'], 'namespace' => 'Admin'], 
 	Route::post('attributevalue/update', 'AttributeController@attributevalue_update')->name('attributeValue.update');
 	Route::get('attributevalue/delete/{id}', 'AttributeController@attributevalue_delete')->name('attributeValue.delete');
 
+	// course routes
+	Route::get('course/create', 'CourseController@create')->name('admin.course.create');
+	Route::get('course/list/{status?}', 'CourseController@index')->name('admin.course.list');
+	Route::post('course/store', 'CourseController@store')->name('admin.course.store');
+	Route::get('course/{slug}/edit', 'CourseController@edit')->name('admin.course.edit');
+	Route::post('course/update/{id}', 'CourseController@update')->name('admin.course.update');
+	Route::get('course/delete/{id}', 'CourseController@delete')->name('admin.course.delete');
 	
+	//section & lesson routes
+	Route::get('course/lessons/{slug?}', 'CourseSectionController@index')->name('admin.course.lessons');
+	
+	Route::post('course/section/store/{course_id}', 'CourseSectionController@store')->name('admin.course.section.store');
+	Route::get('course/section/{id}/edit', 'CourseSectionController@edit')->name('admin.course.section.edit');
+	Route::post('course/section/update', 'CourseSectionController@update')->name('admin.course.section.update');
+	Route::get('course/section/delete/{id}', 'CourseSectionController@delete')->name('admin.course.section.delete');
+	//lesson store
+	Route::post('course/lesson/store', 'CourseLessonController@store')->name('admin.course.lesson.store');
+	Route::get('course/lesson/{id}/edit', 'CourseLessonController@edit')->name('admin.course.lesson.edit');
+	Route::post('course/lesson/update', 'CourseLessonController@update')->name('admin.course.lesson.update');
+	Route::get('course/lesson/delete/{id}', 'CourseLessonController@delete')->name('admin.course.lesson.delete');
+	//get highlight popup
+	Route::get('course/highlight/popup/{id}', 'CourseController@highlight')->name('course.highlight');
+ 	//add/remove highlight course
+	Route::get('course/highlight/addRemove', 'CourseController@highlightAddRemove')->name('highlightAddRemove');
 
+	// payment route
+	Route::get('payment/gateway', 'PaymentGatewayController@index')->name('paymentGateway');
+	Route::post('payment/gateway/store', 'PaymentGatewayController@store')->name('paymentGateway.store');
+	Route::get('payment/gateway/edit/{id}', 'PaymentGatewayController@edit')->name('paymentGateway.edit');
+	Route::post('payment/gateway/update', 'PaymentGatewayController@update')->name('paymentGateway.update');
+	Route::get('payment/gateway/delete/{id}', 'PaymentGatewayController@delete')->name('paymentGateway.delete');
+	Route::get('payment/gateway/mode/change', 'PaymentGatewayController@paymentModeChange')->name('paymentModeChange');
+
+
+	Route::get('enroll/{status?}', 'AdminOrderController@orderHistory')->name('admin.orderList');
+	Route::get('enroll/details/{enroll_id}', 'AdminOrderController@orderDetails')->name('admin.getOrderDetails');
+	Route::get('enroll/invoice/{enroll_id?}', 'AdminOrderController@orderInvoice')->name('admin.orderInvoice');
+
+	//change payment status
+	Route::get('payment/status/change', 'AdminOrderController@changePaymentStatus')->name('admin.changePaymentStatus');
+	//change order status
+	Route::get('order/status/change', 'AdminOrderController@changeOrderStatus')->name('admin.changeOrderStatus');
 	// page routes
 	Route::get('page/create', 'PageController@create')->name('page.create');
 	Route::post('page/store', 'PageController@store')->name('page.store');
@@ -152,8 +204,23 @@ Route::group(['middleware' => ['auth:admin', 'admin'], 'namespace' => 'Admin'], 
 	Route::post('payment/gateway/update', 'PaymentGatewayController@update')->name('paymentGateway.update');
 	Route::get('payment/gateway/delete/{id}', 'PaymentGatewayController@delete')->name('paymentGateway.delete');
 	Route::get('payment/gateway/mode/change', 'PaymentGatewayController@paymentModeChange')->name('paymentModeChange');
-	//seller payment route
-	Route::get('payment/gateway/seller', 'PaymentGatewayController@sellerPaymentGateway')->name('sellerPaymentGateway');
+
+	// user routes
+	
+	Route::post('student/store', 'StudentAdminController@store')->name('student.store');
+	Route::get('student/{id}/edit', 'StudentAdminController@edit')->name('student.edit');
+	Route::post('student/update', 'StudentAdminController@update')->name('student.update');
+	Route::get('student/delete/{id}', 'StudentAdminController@delete')->name('student.delete');
+
+	Route::get('student/list/{status?}', 'StudentAdminController@studentList')->name('student.list');
+	Route::get('student/secret/login/{id}', 'StudentAdminController@studentSecretLogin')->name('admin.studentSecretLogin');
+	Route::get('student/profile/{username}', 'StudentAdminController@studentProfile')->name('student.profile');	
+
+	//wallet history
+	Route::get('student/wallet/history', 'StudentAdminController@walletHistory')->name('student.walletHistory')->middleware('adminPermission');
+	Route::get('student/wallet/information', 'StudentAdminController@studentWalletInfo')->name('student.walletInfo');	
+	Route::post('student/wallet/recharge', 'StudentAdminController@walletRecharge')->name('student.walletRecharge');	
+
 
 	
 });

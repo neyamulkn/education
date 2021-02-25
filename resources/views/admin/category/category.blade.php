@@ -87,7 +87,7 @@
                                                 <td>
                                                     
                                                     <button type="button" onclick="edit('{{$data->id}}')"  data-toggle="modal" data-target="#edit" class="btn btn-info btn-sm"><i class="ti-pencil" aria-hidden="true"></i> Edit</button>
-                                                    <button title="delete" data-target="#delete" onclick="confirmPopup('{{ $data->id }}')" class="btn btn-danger btn-sm" data-toggle="modal"><i class="ti-trash" aria-hidden="true"></i></button>
+                                                    <button title="delete" data-target="#delete" onclick="deleteConfirmPopup('{{ route('category.delete', $data->id) }}')" class="btn btn-danger btn-sm" data-toggle="modal"><i class="ti-trash" aria-hidden="true"></i></button>
                                                 </td>
                                             </tr>
                                             @endforeach
@@ -204,32 +204,7 @@
         </div>
 
         <!-- delete Modal -->
-       
-        <!-- delete Modal -->
-        <div id="delete" class="modal fade">
-            <div class="modal-dialog modal-confirm">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <div class="icon-box">
-                            <i class="fa fa-times" aria-hidden="true"></i>
-                        </div>
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    </div>
-                    <div class="modal-body">
-                        <h4 class="modal-title">Are you sure?</h4>
-                        <p>Do you really want to delete these records? This process cannot be undone.</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
-                        <button type="button" value="" id="itemID" onclick="deleteItem(this.value)" data-dismiss="modal" class="btn btn-danger">Delete</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- banner modal -->
-        @include('admin.category.category-banner-modal');
-
-        
+        @include('admin.modal.delete-modal')
 @endsection
 @section('js')
 
@@ -245,7 +220,7 @@
     <script src="{{asset('assets')}}/node_modules/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="{{asset('assets')}}/node_modules/datatables.net-bs4/js/dataTables.responsive.min.js"></script>
 
-        <!-- bt-switch -->
+    <!-- bt-switch -->
     <script src="{{asset('assets')}}/node_modules/bootstrap-switch/bootstrap-switch.min.js"></script>
     <script type="text/javascript">
     $(".bt-switch input[type='checkbox'], .bt-switch input[type='radio']").bootstrapSwitch();
@@ -278,9 +253,6 @@
         });
     </script>
 
-
-
-
     <script type="text/javascript">
 
         function edit(id){
@@ -298,34 +270,8 @@
                 },
                 // $ID Error display id name
                 @include('common.ajaxError', ['ID' => 'edit_form'])
-
             });
         } 
-
-
-    function confirmPopup(id) {
-
-          document.getElementById('itemID').value = id;
-     }
-    function deleteItem(id) {
-
-        var link = '{{route("category.delete", ":id")}}';
-        var link = link.replace(':id', id);
-
-            $.ajax({
-            url:link,
-            method:"get",
-            success:function(data){
-                if(data.status){
-                    $("#item"+id).hide();
-                    toastr.success(data.msg);
-                }else{
-                    toastr.error(data.msg);
-                }
-            }
-
-        });
-    }
 
     </script>
     

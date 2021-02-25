@@ -39,11 +39,12 @@ class CreateUsersTable extends Migration
             $table->integer('region')->nullable();
             $table->integer('city')->nullable();
             $table->integer('area')->nullable();
+            $table->integer('zip_code')->nullable();
             $table->string('address')->nullable();
             $table->decimal('referral_amount')->default(0);
             $table->integer('referral_by')->nullable();
             $table->integer('total_referral')->default(0);
-            $table->string('phato', 225)->default('default.png');
+            $table->string('photo', 225)->nullable();
 
             $table->timestamp('last_login')->nullable();
             $table->timestamp('join_date')->nullable();

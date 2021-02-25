@@ -21,9 +21,7 @@ class CategoryController extends Controller
     /**  Category list Display.*/
     public function category()
     {
-        $get_data = new Category();
-        $get_data->where('parent_id', '=' , null);
-        $get_data = $get_data->orderBy('position', 'asc')->get();
+        $get_data = Category::where('parent_id', '=' , null)->orderBy('position', 'asc')->get();
         return view('admin.category.category')->with(compact('get_data'));
     }
 

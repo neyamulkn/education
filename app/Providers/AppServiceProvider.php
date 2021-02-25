@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\GeneralSetting;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\ServiceProvider;
 
@@ -30,7 +31,11 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrap();
 
         if(!Session::has('siteSetting')){
-            Session::put('siteSetting', GeneralSetting::first());
+            if (Schema::hasTable('general_settings')) {
+                Session::put('siteSetting', GeneralSetting::first());
+            }else{
+                Session::put('siteSetting', []);
+            }
         }
         Config::set('siteSetting', Session::get('siteSetting'));
         view()->share('siteSetting', Session::get('siteSetting'));

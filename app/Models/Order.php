@@ -5,27 +5,21 @@ namespace App\Models;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Order extends Model
 {
-    use \App\Traits\Vendor;
+    use HasFactory;
+
     protected $guarded = [];
 
-    public function customer(){
+    
+    public function user(){
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function order_details(){
-        return $this->hasMany(OrderDetail::class, 'order_id', 'order_id');
-    }
-
-    public function seller_order_details(){
-        $vendor_id = $this->vendor_id();
-        return $this->hasMany(OrderDetail::class, 'order_id', 'order_id')->where('vendor_id', $vendor_id);
-    }
-
-    public function shipping_method(){
-        return $this->belongsTo(ShippingMethod::class, 'shipping_method_id');
+    public function courseDetails(){
+        return $this->belongsTo(Course::class, 'course_id');
     }
 
     public function get_country(){

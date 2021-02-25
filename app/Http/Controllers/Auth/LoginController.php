@@ -46,7 +46,6 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-
         $input = $request->all();
 
         $this->validate($request, [
@@ -69,17 +68,10 @@ class LoginController extends Controller
                 Auth::logout();
                 return back()->withInput();
             }
-            Cart::where('user_id', $user_id)->update(['user_id' => Auth::id()]);
-            //check duplicate records
-            $duplicateRecords = Cart::select('product_id')
-                ->where('user_id', Auth::id())
-                ->selectRaw( 'id, count("product_id") as occurences')
-                ->groupBy('product_id')
-                ->having('occurences', '>', 1)
-                ->get();
-            //delete duplicate record
-            foreach($duplicateRecords as $record) {
-                $record->where('id', $record->id)->delete();
+            if(Auth::user()->role != 'student') {
+                Toastr::error( $fieldType. ' or password is invalid.');
+                Auth::logout();
+                return back()->withInput();
             }
 
             Toastr::success('Logged in success.');

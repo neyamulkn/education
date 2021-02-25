@@ -189,8 +189,6 @@
         </div>
 
         <!-- delete Modal -->
-       
-        <!-- delete Modal -->
         @include('admin.modal.delete-modal')
 
 

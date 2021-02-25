@@ -31,7 +31,7 @@ class AdminLoginController extends Controller
 
         $fieldType = filter_var($request->usernameOrEmail, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
         // Attempt to log the admin in
-        if(Auth::guard('admin')->attempt(array($fieldType => $request->usernameOrEmail, 'password' => $request->password)))
+        if(Auth::guard('admin')->attempt(array($fieldType => $request->usernameOrEmail, 'password' => $request->password, 'role' => 'admin')))
         {
             Toastr::success('Logged in success.');
             return redirect()->intended(route('admin.dashboard'));
